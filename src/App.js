@@ -1,4 +1,4 @@
-import React, { useState, createRef } from 'react';
+import React, { createRef } from 'react';
 import { Container, Dimmer, Loader, Grid, Sticky, Message } from 'semantic-ui-react';
 import 'semantic-ui-css/semantic.min.css';
 
@@ -8,21 +8,12 @@ import { DeveloperConsole } from './substrate-lib/components';
 import AccountSelector from './AccountSelector';
 import Balances from './Balances';
 import BlockNumber from './BlockNumber';
-import Events from './Events';
-import Interactor from './Interactor';
+import BlockDetails from './BlockDetails';
 import Metadata from './Metadata';
 import NodeInfo from './NodeInfo';
-import TemplateModule from './TemplateModule';
-import Transfer from './Transfer';
-import Upgrade from './Upgrade';
 
 function Main () {
-  const [accountAddress, setAccountAddress] = useState(null);
-  const { apiState, keyring, keyringState, apiError } = useSubstrate();
-  const accountPair =
-    accountAddress &&
-    keyringState === 'READY' &&
-    keyring.getPair(accountAddress);
+  const { apiState, keyringState, apiError } = useSubstrate();
 
   const loader = text =>
     <Dimmer active>
@@ -34,7 +25,7 @@ function Main () {
       <Grid.Column>
         <Message negative compact floating
           header='Error Connecting to Substrate'
-          content={`${JSON.stringify(err,null,4)}`}
+          content={`${err}`}
         />
       </Grid.Column>
     </Grid>;
@@ -61,19 +52,11 @@ function Main () {
             <BlockNumber />
             <BlockNumber finalized />
           </Grid.Row>
+          <Grid.Row>
+            <BlockDetails/>
+          </Grid.Row>
           <Grid.Row stretched>
             <Balances />
-          </Grid.Row>
-          <Grid.Row>
-            <Transfer accountPair={accountPair} />
-            <Upgrade accountPair={accountPair} />
-          </Grid.Row>
-          <Grid.Row>
-            <Interactor accountPair={accountPair} />
-            <Events />
-          </Grid.Row>
-          <Grid.Row>
-            <TemplateModule accountPair={accountPair} />
           </Grid.Row>
         </Grid>
       </Container>
